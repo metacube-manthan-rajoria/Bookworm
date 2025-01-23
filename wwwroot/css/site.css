@@ -32,7 +32,7 @@ body {
 
 /* Custom */
 
-#success_button {
+.success_button {
   width: 12rem;
   height: 3.5rem;
   display: grid;
@@ -45,7 +45,7 @@ body {
   border-radius: 0.3rem;
   transition: background-color 0.3s;
 }
-#success_button:hover {
+.success_button:hover {
   background-color: lawngreen;
 }
 
