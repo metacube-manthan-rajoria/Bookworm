@@ -11,3 +11,9 @@
     list-style: none;
     width: -webkit-fill-available;
 }
+
+#category_list tr {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    align-items: center;
+}
