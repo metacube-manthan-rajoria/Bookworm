@@ -4,7 +4,12 @@
     bool showError = error != null && !error.Equals("");
 }
 
-<h1 class="mb-4">Category</h1>
+<div id="category_nav">
+    <h1>Category</h1>
+
+    <a asp-controller="Category" asp-action="Add" class="btn success_button">Add Category</a>
+</div>
+
 @if (showError)
 {
     <div class="alert alert-danger mb-3" role="alert">
