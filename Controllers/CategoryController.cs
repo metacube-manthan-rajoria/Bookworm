@@ -21,6 +21,7 @@ namespace Bookworm.Controllers
 
         [HttpPost]
         public IActionResult Add(Category category){
+            ApplicationDbClient.RunInsertQuery(category);
             return RedirectToAction("Index", "Category");
         }
 

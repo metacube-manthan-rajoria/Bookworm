@@ -1,0 +1,18 @@
+@model Category
+
+<h1>Add New Category</h1>
+
+<form action="@Url.Action("Add","Category")" method="post">
+    <div class="category_form">
+        <input asp-for="Id" placeholder="Category ID" class="input">
+        <span asp-validation-for="Id" class="text-danger"></span>
+
+        <input asp-for="Name" placeholder="Category Name" class="input">
+        <span asp-validation-for="Name" class="text-danger"></span>
+
+        <input asp-for="DisplayOrder" placeholder="Display Order" class="input">
+        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+
+        <button class="form-button">Add Category</button>
+    </div>
+</form>

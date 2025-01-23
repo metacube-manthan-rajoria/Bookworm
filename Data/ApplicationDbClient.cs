@@ -58,6 +58,38 @@ public class ApplicationDbClient
         }
     }
 
+    public static bool RunInsertQuery(Category category){
+        try
+        {
+            using (var connection = new SqlClient.SqlConnection(connectionString))
+            {
+                connection.Open();
+                if (connection == null) return false;
+
+                using (var command = new SqlClient.SqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = DT.CommandType.Text;
+                    command.CommandText = 
+                        "INSERT INTO Categories(Name, DisplayOrder) " +
+                        $"VALUES('{category.Name}',{category.DisplayOrder})";
+                    command.ExecuteNonQuery();
+                }
+
+                connection.Close();
+                return true;
+            }
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    public static bool RunUpdateQuery(Category category){
+        return true;
+    }
+
     public static bool RunDeleteQuery(int id){
         try
         {
