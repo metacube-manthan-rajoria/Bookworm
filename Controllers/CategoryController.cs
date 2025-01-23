@@ -13,5 +13,11 @@ namespace Bookworm.Controllers
             ViewBag.categories = categories;
             return View();
         }
+
+        public IActionResult Delete(int id){
+            bool deleted = ApplicationDbClient.RunDeleteQuery(id);
+            ViewBag.error = "Could not delete the category";
+            return RedirectToAction("Index","Category");
+        }
     }
 }

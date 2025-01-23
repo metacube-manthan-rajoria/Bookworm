@@ -14,7 +14,7 @@ public class ApplicationDbClient
         "Connection Timeout=30;" +
         "Encrypt=True;";
 
-    static public List<Category>? RunSelectQuery()
+    public static List<Category>? RunSelectQuery()
     {
         try
         {
@@ -55,6 +55,32 @@ public class ApplicationDbClient
         catch (Exception)
         {
             return null;
+        }
+    }
+
+    public static bool RunDeleteQuery(int id){
+        try
+        {
+            using (var connection = new SqlClient.SqlConnection(connectionString))
+            {
+                connection.Open();
+                if (connection == null) return false;
+
+                using (var command = new SqlClient.SqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = DT.CommandType.Text;
+                    command.CommandText = @"DELETE FROM Categories WHERE Id="+id;
+                    command.ExecuteNonQuery();
+                }
+
+                connection.Close();
+                return true;
+            }
+        }
+        catch (Exception)
+        {
+            return false;
         }
     }
 }
