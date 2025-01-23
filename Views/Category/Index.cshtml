@@ -1,21 +1,40 @@
 @{
     List<Category>? categories = ViewBag.categories;
+    bool showError = ViewBag.error == null;
 }
 
 <h1>Category</h1>
+@if (showError)
+{
+    <div class="alert alert-danger mb-3" role="alert">
+        @ViewBag.error
+    </div>
+}
 
-<ul id="categories_list">
-    @foreach(var category in categories){
-        <li>
-            <div>
-                <cite>@category.Name</cite>
-                <span>@category.Id</span>
-            </div>
-            <div>
-                <a class="btn btn-outline-warning mb-2" asp-controller="Category" asp-action="Index" asp-route-id="@category.Id">Edit</a>
-                <a class="btn btn-outline-danger" asp-controller="Category" asp-action="Index" asp-route-id="@category.Id">Delete</a>
-            </div>
-        </li>
-    }
-</ul>
-    
+@if (categories == null || categories.Count <= 1)
+{
+    <p class="display-6">
+        There are no categories
+    </p>
+    <span class="fs-6 text-secondary">Please add some categories</span>
+}
+else
+{
+    <ul id="categories_list">
+        @foreach (var category in categories)
+        {
+            <li>
+                <div>
+                    <cite>@category.Name</cite>
+                    <span>@category.Id</span>
+                </div>
+                <div>
+                    <a class="btn btn-outline-warning mb-2" asp-controller="Category" asp-action="Index"
+                        asp-route-id="@category.Id">Edit</a>
+                    <a class="btn btn-outline-danger" asp-controller="Category" asp-action="Index"
+                        asp-route-id="@category.Id">Delete</a>
+                </div>
+            </li>
+        }
+    </ul>
+}
