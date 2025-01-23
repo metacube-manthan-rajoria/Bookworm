@@ -1,13 +1,14 @@
 @{
     List<Category>? categories = ViewBag.categories;
-    bool showError = ViewBag.error == null;
+    string error = ViewBag.error;
+    bool showError = error != null && !error.Equals("");
 }
 
-<h1>Category</h1>
+<h1 class="mb-4">Category</h1>
 @if (showError)
 {
     <div class="alert alert-danger mb-3" role="alert">
-        @ViewBag.error
+        @error
     </div>
 }
 
@@ -20,21 +21,23 @@
 }
 else
 {
-    <ul id="categories_list">
-        @foreach (var category in categories)
+    <table id="category_list" class="mb-5">
+        <tr class="border-bottom border-black">
+            <th>Id</th>
+            <th>Name</th>
+            <th>DisplayOrder</th>
+        </tr>
+        @foreach (var category in categories!)
         {
-            <li>
-                <div>
-                    <cite>@category.Name</cite>
-                    <span>@category.Id</span>
-                </div>
-                <div>
-                    <a class="btn btn-outline-warning mb-2" asp-controller="Category" asp-action="Index"
-                        asp-route-id="@category.Id">Edit</a>
-                    <a class="btn btn-outline-danger" asp-controller="Category" asp-action="Index"
+            <tr class="border-bottom" style="height: 4rem;">
+                <td>@category.Id</td>
+                <td>@category.Name</td>
+                <td>@category.DisplayOrder</td>
+                <td class="align-items-center">
+                    <a class="btn btn-outline-danger button-delete" asp-controller="Category" asp-action="Delete"
                         asp-route-id="@category.Id">Delete</a>
-                </div>
-            </li>
+                </td>
+            </tr>
         }
-    </ul>
+    </table>
 }
