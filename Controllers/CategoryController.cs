@@ -25,15 +25,21 @@ namespace Bookworm.Controllers
             return RedirectToAction("Index", "Category");
         }
 
+        [HttpGet]
         public IActionResult Edit(int id){
             List<Category>? categories = ApplicationDbClient.RunSelectQuery();
-            Category? editableCategory = null;
+            Category? categoryToEdit = null;
             foreach(var category in categories!){
-                if(category.Id == id) editableCategory = category;
+                if(category.Id == id) categoryToEdit = category;
             }
+            return View(categoryToEdit);
+        }
 
-            ViewBag.category = editableCategory;
-            return View();
+        [HttpPost]
+        public IActionResult Edit(Category category){
+            bool updated = ApplicationDbClient.RunUpdateQuery(category);
+            if(!updated) ViewBag.error = "Could not update the category";
+            return RedirectToAction("Index","Category");
         }
 
         public IActionResult Delete(int id){

@@ -87,7 +87,30 @@ public class ApplicationDbClient
     }
 
     public static bool RunUpdateQuery(Category category){
-        return true;
+        try
+        {
+            using (var connection = new SqlClient.SqlConnection(connectionString))
+            {
+                connection.Open();
+                if (connection == null) return false;
+
+                using (var command = new SqlClient.SqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = DT.CommandType.Text;
+                    command.CommandText = 
+                    $"UPDATE Categories SET Name='{category.Name}', DisplayOrder={category.DisplayOrder} WHERE Id={category.Id}";
+                    command.ExecuteNonQuery();
+                }
+
+                connection.Close();
+                return true;
+            }
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     public static bool RunDeleteQuery(int id){

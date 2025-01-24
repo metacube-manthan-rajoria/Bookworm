@@ -1,5 +1,20 @@
+@model Category
 @{
     Category? category = ViewBag.category;
 }
 
 <h1>Edit Category</h1>
+
+<form action="@Url.Action("Edit","Category")" method="post">
+    <div class="category_form">
+        <input type="hidden" value="@Model.Id">
+
+        <input asp-for="Name" placeholder="Category Name" class="input" value="@Model.Name">
+        <span asp-validation-for="Name" class="text-danger"></span>
+
+        <input asp-for="DisplayOrder" placeholder="Display Order" class="input" value="@Model.DisplayOrder">
+        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+
+        <button class="form-button">Update Category</button>
+    </div>
+</form>
