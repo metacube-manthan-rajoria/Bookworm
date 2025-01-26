@@ -7,7 +7,9 @@
 <div id="category_nav">
     <h1>Category</h1>
 
-    <a asp-controller="Category" asp-action="Add" class="btn success_button">Add Category</a>
+    <a asp-controller="Category" asp-action="Add" class="btn success_button">
+        <i class="bi bi-plus-square"></i> Add Category
+    </a>
 </div>
 
 @if (showError)
@@ -40,9 +42,13 @@ else
                 <td>@category.DisplayOrder</td>
                 <td class="d-flex align-items-center justify-content-end">
                     <a class="btn btn-outline-warning button-delete mx-3" asp-controller="Category" asp-action="Edit"
-                        asp-route-id="@category.Id">Edit</a>
-                    <a class="btn btn-outline-danger button-delete" asp-controller="Category" asp-action="Delete"
-                        asp-route-id="@category.Id">Delete</a>
+                        asp-route-id="@category.Id">
+                        <i class="bi bi-pencil-square"></i> Edit
+                    </a>
+                    <a class="btn btn-outline-danger button-delete" asp-controller="Category" asp-action="Delete" 
+                        asp-route-id="@category.Id">
+                        <i class="bi bi-trash3"></i> Delete
+                    </a>
                 </td>
             </tr>
         }

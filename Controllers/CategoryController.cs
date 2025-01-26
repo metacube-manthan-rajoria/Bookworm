@@ -1,6 +1,7 @@
 using Bookworm.Data;
 using Bookworm.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Bookworm.Controllers
 {
@@ -37,25 +38,36 @@ namespace Bookworm.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int id){
-            List<Category>? categories = _db.Categories.ToList();
-            Category? categoryToEdit = null;
-            foreach(var category in categories!){
-                if(category.Id == id) categoryToEdit = category;
-            }
+        public IActionResult Edit(int? id){
+            if(id == null || id == 0) return NotFound();
+
+            Category? categoryToEdit = _db.Categories.Find(id);
+            if(categoryToEdit == null) return NotFound();
+
             return View(categoryToEdit);
         }
 
         [HttpPost]
         public IActionResult Edit(Category category){
-            bool updated = ApplicationDbClient.RunUpdateQuery(category);
-            if(!updated) ViewBag.error = "Could not update the category";
+            if(ModelState.IsValid){
+                _db.Update(category);
+                _db.SaveChanges();
+            }else{
+                ViewBag.error = "Could not update the category";
+            }
+            
             return RedirectToAction("Index","Category");
         }
 
-        public IActionResult Delete(int id){
-            bool deleted = ApplicationDbClient.RunDeleteQuery(id);
-            if(!deleted) ViewBag.error = "Could not delete the category";
+        public IActionResult Delete(int? id){
+            if(id == null || id == 0) return NotFound();
+
+            Category? category = _db.Categories.Find(id);
+            if(category == null) return NotFound();
+            
+            _db.Categories.Remove(category);
+            _db.SaveChanges();
+                
             return RedirectToAction("Index","Category");
         }
     }
