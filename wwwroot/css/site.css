@@ -35,8 +35,7 @@ body {
 .success_button {
   width: 12rem;
   height: 3.5rem;
-  display: grid;
-  align-items: center;
+  align-content: center;
   justify-items: center;
   text-decoration: none;
   background-color: white;
