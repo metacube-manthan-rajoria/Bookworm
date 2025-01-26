@@ -13,7 +13,6 @@ namespace Bookworm.Controllers
             _db = db; 
         }
 
-        // GET: CategoryController
         public IActionResult Index()
         {
             List<Category>? categories = _db.Categories.ToList();
