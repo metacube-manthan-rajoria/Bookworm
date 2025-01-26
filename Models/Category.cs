@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Bookworm.Models;
@@ -9,5 +10,6 @@ public class Category
     [Required]
     public string? Name {get; set;}
     [Required]
+    [DisplayName("Display Order")]
     public int DisplayOrder { get; set; }
 }

@@ -6,10 +6,16 @@ namespace Bookworm.Controllers
 {
     public class CategoryController : Controller
     {
+        private readonly ApplicationDbContext _db;
+        public CategoryController(ApplicationDbContext db)
+        {
+            _db = db; 
+        }
+
         // GET: CategoryController
         public IActionResult Index()
         {
-            List<Category>? categories = ApplicationDbClient.RunSelectQuery();
+            List<Category>? categories = _db.Categories.ToList();
             ViewBag.categories = categories;
             return View();
         }
@@ -21,13 +27,18 @@ namespace Bookworm.Controllers
 
         [HttpPost]
         public IActionResult Add(Category category){
-            ApplicationDbClient.RunInsertQuery(category);
+            if(ModelState.IsValid){
+                _db.Categories.Add(category);
+                _db.SaveChanges();
+            }else{
+                ViewBag.error = "Could not add Category - Invalid Category";
+            }
             return RedirectToAction("Index", "Category");
         }
 
         [HttpGet]
         public IActionResult Edit(int id){
-            List<Category>? categories = ApplicationDbClient.RunSelectQuery();
+            List<Category>? categories = _db.Categories.ToList();
             Category? categoryToEdit = null;
             foreach(var category in categories!){
                 if(category.Id == id) categoryToEdit = category;
