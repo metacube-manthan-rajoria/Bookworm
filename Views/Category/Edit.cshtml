@@ -1,7 +1,4 @@
 @model Category
-@{
-    Category? category = ViewBag.category;
-}
 
 <h1>Edit Category</h1>
 
@@ -18,3 +15,9 @@
         <button class="form-button">Update Category</button>
     </div>
 </form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial"/>
+    }
+}
