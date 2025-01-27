@@ -41,6 +41,8 @@ else
                 <td>@category.Name</td>
                 <td>@category.DisplayOrder</td>
                 <td class="d-flex align-items-center justify-content-end">
+                    <a class="btn btn-outline-info button-delete mx-3" asp-controller="Category" asp-action="IncrementDO"
+                        asp-route-id="@category.Id">DO +1</a>
                     <a class="btn btn-outline-warning button-delete mx-3" asp-controller="Category" asp-action="Edit"
                         asp-route-id="@category.Id">Edit</a>
                     <a class="btn btn-outline-danger button-delete" asp-controller="Category" asp-action="Delete"

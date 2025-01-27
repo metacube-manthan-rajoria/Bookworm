@@ -49,5 +49,12 @@ namespace Bookworm.Controllers
             if(!deleted) ViewBag.error = "Could not delete the category";
             return RedirectToAction("Index","Category");
         }
+
+        public IActionResult IncrementDO(int id){
+            bool increasedDo = ApplicationDbClient.RunCrudUpdateQuery(id);
+            
+            if(!increasedDo) ViewBag.error = "Could not update the category";
+            return RedirectToAction("Index","Category");
+        }
     }
 }
