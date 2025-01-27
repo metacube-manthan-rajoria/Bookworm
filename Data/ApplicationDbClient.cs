@@ -58,7 +58,8 @@ public class ApplicationDbClient
         }
     }
 
-    public static bool RunInsertQuery(Category category){
+    public static bool RunInsertQuery(Category category)
+    {
         try
         {
             using (var connection = new SqlClient.SqlConnection(connectionString))
@@ -70,7 +71,7 @@ public class ApplicationDbClient
                 {
                     command.Connection = connection;
                     command.CommandType = DT.CommandType.Text;
-                    command.CommandText = 
+                    command.CommandText =
                         "INSERT INTO Categories(Name, DisplayOrder) " +
                         $"VALUES('{category.Name}',{category.DisplayOrder})";
                     command.ExecuteNonQuery();
@@ -86,7 +87,8 @@ public class ApplicationDbClient
         }
     }
 
-    public static bool RunUpdateQuery(Category category){
+    public static bool RunUpdateQuery(Category category)
+    {
         try
         {
             using (var connection = new SqlClient.SqlConnection(connectionString))
@@ -98,7 +100,7 @@ public class ApplicationDbClient
                 {
                     command.Connection = connection;
                     command.CommandType = DT.CommandType.Text;
-                    command.CommandText = 
+                    command.CommandText =
                     $"UPDATE Categories SET Name='{category.Name}', DisplayOrder={category.DisplayOrder} WHERE Id={category.Id}";
                     command.ExecuteNonQuery();
                 }
@@ -113,7 +115,8 @@ public class ApplicationDbClient
         }
     }
 
-    public static bool RunDeleteQuery(int id){
+    public static bool RunDeleteQuery(int id)
+    {
         try
         {
             using (var connection = new SqlClient.SqlConnection(connectionString))
@@ -125,7 +128,7 @@ public class ApplicationDbClient
                 {
                     command.Connection = connection;
                     command.CommandType = DT.CommandType.Text;
-                    command.CommandText = @"DELETE FROM Categories WHERE Id="+id;
+                    command.CommandText = @"DELETE FROM Categories WHERE Id=" + id;
                     command.ExecuteNonQuery();
                 }
 
@@ -136,6 +139,36 @@ public class ApplicationDbClient
         catch (Exception)
         {
             return false;
+        }
+    }
+
+    public static int? RunMaxDisplayOrderQuery()
+    {
+        try
+        {
+            int? maxDisplayOrders = null;
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using (var command = new SqlCommand("GetMaxDisplayOrder", connection))
+                {
+                    command.CommandType = DT.CommandType.StoredProcedure;
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            maxDisplayOrders = reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+
+            return maxDisplayOrders;
+        }
+        catch
+        {
+            return null;
         }
     }
 }
