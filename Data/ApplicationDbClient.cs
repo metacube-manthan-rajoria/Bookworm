@@ -2,6 +2,7 @@ using SqlClient = Microsoft.Data.SqlClient;
 using DT = System.Data;
 using Bookworm.Models;
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace Bookworm.Data;
 
@@ -13,6 +14,13 @@ public class ApplicationDbClient
         "Trusted_Connection=True;TrustServerCertificate=True;" +
         "Connection Timeout=30;" +
         "Encrypt=True;";
+
+    private static readonly DT.DataSet? dataSet = new DT.DataSet();
+
+    static ApplicationDbClient()
+    {
+        dataSet = RunCrudSelectQuery();
+    }
 
     public static List<Category>? RunSelectQuery()
     {
@@ -172,9 +180,10 @@ public class ApplicationDbClient
         }
     }
 
-    public static List<Category> RunCrudSelectQuery()
+    public static DataSet? RunCrudSelectQuery()
     {
-        try{
+        try
+        {
             SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand query = new SqlCommand("SELECT * FROM Categories", connection);
             query.CommandTimeout = 30;
@@ -184,30 +193,20 @@ public class ApplicationDbClient
             DT.DataSet categoriesSet = new DT.DataSet();
             adapter.Fill(categoriesSet, "Categories");
             connection.Close();
+            return categoriesSet;
 
-            // Creating List from DataSet
-            List<Category> categories = new List<Category>();
-            foreach(DT.DataTable table in categoriesSet.Tables){
-                if(table.TableName.Equals("Categories")){
-                    foreach(DT.DataRow row in table.Rows){
-                        categories.Add(new Category{
-                            Id = Convert.ToInt32(row["Id"]),
-                            Name = Convert.ToString(row["Name"]),
-                            DisplayOrder = Convert.ToInt32(row["DisplayOrder"])
-                        });
-                    }
-                }
-            }
-            return categories;
-        }catch{
-            return new List<Category>();
         }
-        
+        catch
+        {
+            return null;
+        }
+
     }
 
     public static bool RunCrudUpdateQuery(int id)
     {
-        try{
+        try
+        {
             SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand query = new SqlCommand("Update Categories SET DisplayOrder = DisplayOrder + 1 WHERE Id=" + id, connection);
             query.CommandTimeout = 30;
@@ -218,7 +217,9 @@ public class ApplicationDbClient
             adapter.Fill(categoriesSet, "Categories");
             connection.Close();
             return true;
-        }catch{
+        }
+        catch
+        {
             return false;
         }
     }
@@ -235,5 +236,28 @@ public class ApplicationDbClient
         customerDA.Fill(customerDS, "Customers");
         connection.Close();
         return true;
+    }
+
+    public static List<Category> GetCategoryList()
+    {
+        // Creating List from DataSet
+        List<Category> categories = new List<Category>();
+        if(dataSet == null) return categories;
+        foreach (DT.DataTable table in dataSet.Tables)
+        {
+            if (table.TableName.Equals("Categories"))
+            {
+                foreach (DT.DataRow row in table.Rows)
+                {
+                    categories.Add(new Category
+                    {
+                        Id = Convert.ToInt32(row["Id"]),
+                        Name = Convert.ToString(row["Name"]),
+                        DisplayOrder = Convert.ToInt32(row["DisplayOrder"])
+                    });
+                }
+            }
+        }
+        return categories;
     }
 }

@@ -29,7 +29,7 @@ namespace Bookworm.Controllers
 
         [HttpGet]
         public IActionResult Edit(int id){
-            List<Category>? categories = ApplicationDbClient.RunSelectQuery();
+            List<Category>? categories = ApplicationDbClient.GetCategoryList();
             Category? categoryToEdit = null;
             foreach(var category in categories!){
                 if(category.Id == id) categoryToEdit = category;
