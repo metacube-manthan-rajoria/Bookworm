@@ -10,7 +10,9 @@ namespace Bookworm.Controllers
         public IActionResult Index()
         {
             List<Category>? categories = ApplicationDbClient.RunSelectQuery();
+            int? maxDisplayOrder = ApplicationDbClient.RunMaxDisplayOrderQuery();
             ViewBag.categories = categories;
+            ViewBag.maxDisplayOrder = maxDisplayOrder;
             return View();
         }
 

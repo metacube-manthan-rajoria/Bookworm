@@ -1,5 +1,7 @@
 @{
     List<Category>? categories = ViewBag.categories;
+    int? maxDisplayOrder = ViewBag.maxDisplayOrder;
+
     string error = ViewBag.error;
     bool showError = error != null && !error.Equals("");
 }
@@ -47,4 +49,10 @@ else
             </tr>
         }
     </table>
+    <br>
+    <div class="d-flex justify-content-end">
+        @if(maxDisplayOrder != null){
+            <span>Max Display Order : @maxDisplayOrder</span>
+        }
+    </div>
 }
