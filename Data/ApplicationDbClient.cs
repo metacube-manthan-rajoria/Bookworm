@@ -205,6 +205,19 @@ public class ApplicationDbClient
 
     }
 
+    public static bool RunCrudInsertQuery(Category category){
+        if(dataSet == null) return false;
+        foreach (DT.DataTable table in dataSet.Tables)
+        {
+            if (table.TableName.Equals("Categories"))
+            {
+                table.Rows.Add(category.Id, category.Name, category.DisplayOrder);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static bool RunCrudUpdateQuery(Category category)
     {
         try
