@@ -22,6 +22,7 @@ public class ApplicationDbClient
         dataSet = RunCrudSelectQuery();
     }
 
+    // Connected Data Access
     public static List<Category>? RunSelectQuery()
     {
         try
@@ -180,6 +181,7 @@ public class ApplicationDbClient
         }
     }
 
+    // Disconnected Data Access
     public static DataSet? RunCrudSelectQuery()
     {
         try
@@ -203,20 +205,23 @@ public class ApplicationDbClient
 
     }
 
-    public static bool RunCrudUpdateQuery(int id)
+    public static bool RunCrudUpdateQuery(Category category)
     {
         try
         {
-            SqlConnection connection = new SqlConnection(connectionString);
-            SqlCommand query = new SqlCommand("Update Categories SET DisplayOrder = DisplayOrder + 1 WHERE Id=" + id, connection);
-            query.CommandTimeout = 30;
-            SqlDataAdapter adapter = new SqlDataAdapter();
-            adapter.UpdateCommand = query;
-            connection.Open();
-            DT.DataSet categoriesSet = new DT.DataSet();
-            adapter.Fill(categoriesSet, "Categories");
-            connection.Close();
-            return true;
+            if(dataSet == null) return false;
+            foreach(DataTable table in dataSet.Tables){
+                if(table.TableName.Equals("Categories")){
+                    foreach(DataRow row in table.Rows){
+                        if(Convert.ToInt32(row["Id"]) == category.Id){
+                            row["Name"] = category.Name;
+                            row["DisplayOrder"] = category.DisplayOrder;
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
         catch
         {
@@ -224,20 +229,30 @@ public class ApplicationDbClient
         }
     }
 
-    public static bool RunCrudDeleteQuery()
+    public static bool RunCrudDeleteQuery(int id)
     {
-        SqlConnection connection = new SqlConnection("Data Source=.;Integrated Security=SSPI;Initial Catalog=Bookworm");
-        SqlCommand query = new SqlCommand("SELECT * FROM Categories", connection);
-        query.CommandTimeout = 30;
-        SqlDataAdapter customerDA = new SqlDataAdapter();
-        customerDA.SelectCommand = query;
-        connection.Open();
-        DT.DataSet customerDS = new DT.DataSet();
-        customerDA.Fill(customerDS, "Customers");
-        connection.Close();
-        return true;
+        try
+        {
+            if(dataSet == null) return false;
+            foreach(DataTable table in dataSet.Tables){
+                if(table.TableName.Equals("Categories")){
+                    foreach(DataRow row in table.Rows){
+                        if(Convert.ToInt32(row["Id"]) == id){
+                            table.Rows.Remove(row);
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
+    // Helper Methods
     public static List<Category> GetCategoryList()
     {
         // Creating List from DataSet
@@ -259,5 +274,26 @@ public class ApplicationDbClient
             }
         }
         return categories;
+    }
+    
+    public static bool RunDOQuery(int id)
+    {
+        try
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand query = new SqlCommand("Update Categories SET DisplayOrder = DisplayOrder + 1 WHERE Id=" + id, connection);
+            query.CommandTimeout = 30;
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            adapter.UpdateCommand = query;
+            connection.Open();
+            DT.DataSet categoriesSet = new DT.DataSet();
+            adapter.Fill(categoriesSet, "Categories");
+            connection.Close();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace Bookworm.Controllers
         // GET: CategoryController
         public IActionResult Index()
         {
-            List<Category>? categories = ApplicationDbClient.RunSelectQuery();
+            List<Category>? categories = ApplicationDbClient.GetCategoryList();
             int? maxDisplayOrder = ApplicationDbClient.RunMaxDisplayOrderQuery();
             ViewBag.categories = categories;
             ViewBag.maxDisplayOrder = maxDisplayOrder;
@@ -39,19 +39,19 @@ namespace Bookworm.Controllers
 
         [HttpPost]
         public IActionResult Edit(Category category){
-            bool updated = ApplicationDbClient.RunUpdateQuery(category);
+            bool updated = ApplicationDbClient.RunCrudUpdateQuery(category);
             if(!updated) ViewBag.error = "Could not update the category";
             return RedirectToAction("Index","Category");
         }
 
         public IActionResult Delete(int id){
-            bool deleted = ApplicationDbClient.RunDeleteQuery(id);
+            bool deleted = ApplicationDbClient.RunCrudDeleteQuery(id);
             if(!deleted) ViewBag.error = "Could not delete the category";
             return RedirectToAction("Index","Category");
         }
 
         public IActionResult IncrementDO(int id){
-            bool increasedDo = ApplicationDbClient.RunCrudUpdateQuery(id);
+            bool increasedDo = ApplicationDbClient.RunDOQuery(id);
             
             if(!increasedDo) ViewBag.error = "Could not update the category";
             return RedirectToAction("Index","Category");
