@@ -66,6 +66,7 @@ public class ApplicationDbClient
         using (var connection = new SqlConnection(connectionString))
         {
             if (connection == null) return false;
+            connection.Open();
 
             SqlTransaction transaction = connection.BeginTransaction();
 
@@ -90,11 +91,11 @@ public class ApplicationDbClient
                     };
                     command.Parameters.Add(param1);
                     command.Parameters.Add(param2);
-                    connection.Open();
 
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if(category.Name!.Equals("Demo")) throw new Exception("Demo exception for checking transaction");
+                        reader.Close();
                         transaction.Commit();
                         return true;
                     }
@@ -111,6 +112,7 @@ public class ApplicationDbClient
         using (var connection = new SqlConnection(connectionString))
         {
             if (connection == null) return false;
+            connection.Open();
 
             SqlTransaction transaction = connection.BeginTransaction();
 
@@ -142,11 +144,11 @@ public class ApplicationDbClient
                     command.Parameters.Add(param1);
                     command.Parameters.Add(param2);
                     command.Parameters.Add(param3);
-                    connection.Open();
 
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if(category.Name!.Equals("Demo")) throw new Exception("Demo exception for transaction");
+                        reader.Close();
                         transaction.Commit();
                         return true;
                     }
