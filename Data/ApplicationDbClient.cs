@@ -29,8 +29,8 @@ public class ApplicationDbClient
         {
             using (var connection = new SqlClient.SqlConnection(connectionString))
             {
-                connection.Open();
                 if (connection == null) return null;
+                connection.Open();
 
                 List<Category> categoryList = new List<Category>();
 
@@ -73,8 +73,8 @@ public class ApplicationDbClient
         {
             using (var connection = new SqlClient.SqlConnection(connectionString))
             {
-                connection.Open();
                 if (connection == null) return false;
+                connection.Open();
 
                 using (var command = new SqlClient.SqlCommand())
                 {
@@ -102,8 +102,8 @@ public class ApplicationDbClient
         {
             using (var connection = new SqlClient.SqlConnection(connectionString))
             {
-                connection.Open();
                 if (connection == null) return false;
+                connection.Open();
 
                 using (var command = new SqlClient.SqlCommand())
                 {
@@ -130,8 +130,8 @@ public class ApplicationDbClient
         {
             using (var connection = new SqlClient.SqlConnection(connectionString))
             {
-                connection.Open();
                 if (connection == null) return false;
+                connection.Open();
 
                 using (var command = new SqlClient.SqlCommand())
                 {
