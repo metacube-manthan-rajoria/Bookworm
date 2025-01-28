@@ -63,13 +63,14 @@ public class ApplicationDbClient
 
     public static bool RunInsertQuery(Category category)
     {
-        try
+        using (var connection = new SqlConnection(connectionString))
         {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                if (connection == null) return false;
+            if (connection == null) return false;
 
-                using (var command = new SqlCommand("insertCategories", connection))
+            SqlTransaction transaction = connection.BeginTransaction();
+
+            try{
+                using (var command = new SqlCommand("insertCategories", connection, transaction))
                 {
                     command.CommandType = DT.CommandType.StoredProcedure;
 
@@ -93,26 +94,28 @@ public class ApplicationDbClient
 
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
+                        if(category.Name!.Equals("Demo")) throw new Exception("Demo exception for checking transaction");
+                        transaction.Commit();
                         return true;
                     }
                 }
+            }catch{
+                transaction.Rollback();
+                return false;
             }
-        }
-        catch
-        {
-            return false;
         }
     }
 
     public static bool RunUpdateQuery(Category category)
     {
-        try
+        using (var connection = new SqlConnection(connectionString))
         {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                if (connection == null) return false;
+            if (connection == null) return false;
 
-                using (var command = new SqlCommand("updateCategories", connection))
+            SqlTransaction transaction = connection.BeginTransaction();
+
+            try{
+                using (var command = new SqlCommand("updateCategories", connection, transaction))
                 {
                     command.CommandType = DT.CommandType.StoredProcedure;
                     SqlParameter param1 = new SqlParameter
@@ -143,14 +146,15 @@ public class ApplicationDbClient
 
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
+                        if(category.Name!.Equals("Demo")) throw new Exception("Demo exception for transaction");
+                        transaction.Commit();
                         return true;
                     }
                 }
-            }
-        }
-        catch
-        {
-            return false;
+            }catch{
+                transaction.Rollback();
+                return false;
+            }   
         }
     }
 
