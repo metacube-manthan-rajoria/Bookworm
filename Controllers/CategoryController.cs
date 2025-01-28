@@ -9,7 +9,7 @@ namespace Bookworm.Controllers
         // GET: CategoryController
         public IActionResult Index()
         {
-            List<Category>? categories = ApplicationDbClient.GetCategoryList();
+            List<Category>? categories = ApplicationDbClient.RunSelectQuery();
             int? maxDisplayOrder = ApplicationDbClient.RunMaxDisplayOrderQuery();
             ViewBag.categories = categories;
             ViewBag.maxDisplayOrder = maxDisplayOrder;
@@ -23,13 +23,13 @@ namespace Bookworm.Controllers
 
         [HttpPost]
         public IActionResult Add(Category category){
-            ApplicationDbClient.RunCrudInsertQuery(category);
+            ApplicationDbClient.RunInsertQuery(category);
             return RedirectToAction("Index", "Category");
         }
 
         [HttpGet]
         public IActionResult Edit(int id){
-            List<Category>? categories = ApplicationDbClient.GetCategoryList();
+            List<Category>? categories = ApplicationDbClient.RunSelectQuery();
             Category? categoryToEdit = null;
             foreach(var category in categories!){
                 if(category.Id == id) categoryToEdit = category;
@@ -39,13 +39,13 @@ namespace Bookworm.Controllers
 
         [HttpPost]
         public IActionResult Edit(Category category){
-            bool updated = ApplicationDbClient.RunCrudUpdateQuery(category);
+            bool updated = ApplicationDbClient.RunUpdateQuery(category);
             if(!updated) ViewBag.error = "Could not update the category";
             return RedirectToAction("Index","Category");
         }
 
         public IActionResult Delete(int id){
-            bool deleted = ApplicationDbClient.RunCrudDeleteQuery(id);
+            bool deleted = ApplicationDbClient.RunDeleteQuery(id);
             if(!deleted) ViewBag.error = "Could not delete the category";
             return RedirectToAction("Index","Category");
         }

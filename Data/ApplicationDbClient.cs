@@ -27,41 +27,35 @@ public class ApplicationDbClient
     {
         try
         {
-            using (var connection = new SqlClient.SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
-                connection.Open();
                 if (connection == null) return null;
 
                 List<Category> categoryList = new List<Category>();
 
-                using (var command = new SqlClient.SqlCommand())
+                using (var command = new SqlCommand("selectCategories", connection))
                 {
-                    command.Connection = connection;
-                    command.CommandType = DT.CommandType.Text;
-                    command.CommandText = @"SELECT * FROM Categories";
+                    command.CommandType = DT.CommandType.StoredProcedure;
+                    connection.Open();
 
-                    SqlClient.SqlDataReader reader = command.ExecuteReader();
-
-                    while (reader.Read())
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        categoryList.Add(new Category
+                        while (reader.Read())
                         {
-                            Id = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                            DisplayOrder = reader.GetInt32(2)
-                        });
+                            categoryList.Add(new Category
+                            {
+                                Id = reader.GetInt32(0),
+                                Name = reader.GetString(1),
+                                DisplayOrder = reader.GetInt32(2)
+                            });
+                        }
                     }
                 }
 
-                connection.Close();
                 return categoryList;
             }
         }
-        catch (SqlException)
-        {
-            return new List<Category>();
-        }
-        catch (Exception)
+        catch
         {
             return null;
         }
@@ -71,26 +65,40 @@ public class ApplicationDbClient
     {
         try
         {
-            using (var connection = new SqlClient.SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
-                connection.Open();
                 if (connection == null) return false;
 
-                using (var command = new SqlClient.SqlCommand())
+                using (var command = new SqlCommand("insertCategories", connection))
                 {
-                    command.Connection = connection;
-                    command.CommandType = DT.CommandType.Text;
-                    command.CommandText =
-                        "INSERT INTO Categories(Name, DisplayOrder) " +
-                        $"VALUES('{category.Name}',{category.DisplayOrder})";
-                    command.ExecuteNonQuery();
-                }
+                    command.CommandType = DT.CommandType.StoredProcedure;
 
-                connection.Close();
-                return true;
+                    SqlParameter param1 = new SqlParameter
+                    {
+                        ParameterName = "@name",
+                        SqlDbType = SqlDbType.NVarChar,
+                        Value = category.Name,
+                        Direction = ParameterDirection.Input
+                    };
+                    SqlParameter param2 = new SqlParameter
+                    {
+                        ParameterName = "@displayOrder",
+                        SqlDbType = SqlDbType.Int,
+                        Value = category.DisplayOrder,
+                        Direction = ParameterDirection.Input
+                    };
+                    command.Parameters.Add(param1);
+                    command.Parameters.Add(param2);
+                    connection.Open();
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        return true;
+                    }
+                }
             }
         }
-        catch (Exception)
+        catch
         {
             return false;
         }
@@ -100,25 +108,47 @@ public class ApplicationDbClient
     {
         try
         {
-            using (var connection = new SqlClient.SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
-                connection.Open();
                 if (connection == null) return false;
 
-                using (var command = new SqlClient.SqlCommand())
+                using (var command = new SqlCommand("updateCategories", connection))
                 {
-                    command.Connection = connection;
-                    command.CommandType = DT.CommandType.Text;
-                    command.CommandText =
-                    $"UPDATE Categories SET Name='{category.Name}', DisplayOrder={category.DisplayOrder} WHERE Id={category.Id}";
-                    command.ExecuteNonQuery();
-                }
+                    command.CommandType = DT.CommandType.StoredProcedure;
+                    SqlParameter param1 = new SqlParameter
+                    {
+                        ParameterName = "@id",
+                        SqlDbType = SqlDbType.Int,
+                        Value = category.Id,
+                        Direction = ParameterDirection.Input
+                    };
+                    SqlParameter param2 = new SqlParameter
+                    {
+                        ParameterName = "@name",
+                        SqlDbType = SqlDbType.VarChar,
+                        Value = category.Name,
+                        Direction = ParameterDirection.Input
+                    };
+                    SqlParameter param3 = new SqlParameter
+                    {
+                        ParameterName = "@displayOrder",
+                        SqlDbType = SqlDbType.Int,
+                        Value = category.DisplayOrder,
+                        Direction = ParameterDirection.Input
+                    };
+                    command.Parameters.Add(param1);
+                    command.Parameters.Add(param2);
+                    command.Parameters.Add(param3);
+                    connection.Open();
 
-                connection.Close();
-                return true;
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        return true;
+                    }
+                }
             }
         }
-        catch (Exception)
+        catch
         {
             return false;
         }
@@ -128,24 +158,31 @@ public class ApplicationDbClient
     {
         try
         {
-            using (var connection = new SqlClient.SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
-                connection.Open();
                 if (connection == null) return false;
 
-                using (var command = new SqlClient.SqlCommand())
+                using (var command = new SqlCommand("deleteCategories", connection))
                 {
-                    command.Connection = connection;
-                    command.CommandType = DT.CommandType.Text;
-                    command.CommandText = @"DELETE FROM Categories WHERE Id=" + id;
-                    command.ExecuteNonQuery();
-                }
+                    command.CommandType = DT.CommandType.StoredProcedure;
+                    SqlParameter param = new SqlParameter
+                    {
+                        ParameterName = "@id",
+                        SqlDbType = SqlDbType.Int,
+                        Value = id,
+                        Direction = ParameterDirection.Input
+                    };
+                    command.Parameters.Add(param);
+                    connection.Open();
 
-                connection.Close();
-                return true;
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        return true;
+                    }
+                }
             }
         }
-        catch (Exception)
+        catch
         {
             return false;
         }
